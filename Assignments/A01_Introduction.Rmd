@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: Emma Wellbaum
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -22,21 +22,20 @@ The completed exercise is due on <>.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: Most of my experience with data analytics has been working with sptial data. As an undergraduate, I took my first GIS course shortly after I took statistics. For me, the two subjects have always been closely related. I do not have much experience working with non-spatial data. I have been introduced to R through my coursework, but I have not had the opportunity to practice it. I have experience with Git and Python through Advanced GIS. I have also been working on a large data wrangling and analysis process for the Duke Environmental Law and Policy Clinic for the past year. While the project has enabled me to learn a lot through trial-and-error, I am looking forward to getting some formal training through this course. 
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I think I'll do okay with the data wrangling components. I'm interested in seeing how my self-taught methods compare to more formal methods. I am also fairly confident about the coding componets of the course. Even though I have very little experience with R, I'm really excited to learn it. I am not worried that I will have trouble picking it up.  
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
-
+> Answer: It's been a while since I took a proper statistics class. I suspect that it may take me a second to remember how certain tests and models work. I am also really nervous about the Tuesday assignment deadlines. All of my other classes are on Tuesdays. When I signed up for the Thursday lab section, I thought that I was giving myself a break in the week to devote to this course. That was clearly an incorrect assumption on my part and I am working to figure out how I can distribute my workload more evenly thoguhout the week.
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository  and that you have updated your course README file. 
 
-> Answer: 
+> Answer: https://github.com/emmawellbaum/Environmental_Data_Analytics_2021.git
 
 
