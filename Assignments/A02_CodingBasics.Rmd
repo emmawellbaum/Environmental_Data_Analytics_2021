@@ -61,7 +61,8 @@ test_score <- c(70, 80, 99, 49) # numeric vector type
 passed <- c(TRUE, TRUE, TRUE, FALSE) # logical vector type
 
 #7. & 8.
-df_test_results <- data.frame("student_name"=student_name,"test_score"=test_score,"passed"=passed)
+df_test_results <- data.frame("student_name"=student_name, "test_score"=test_score, 
+                              "passed"=passed)
 df_test_results
 
 ```
