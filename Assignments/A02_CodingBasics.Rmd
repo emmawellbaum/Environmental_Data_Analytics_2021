@@ -41,6 +41,7 @@ median(sequence100by4)
 
 #3. 
 mean(sequence100by4) > median(sequence100by4)
+
 ```
 
 ## Basics Day 2
@@ -55,9 +56,9 @@ mean(sequence100by4) > median(sequence100by4)
 
 ```{r}
 #5. & 6.
-student_name <- c("Larry", "Velma", "Cher", "Stew") # character vector
-test_score <- c(70, 80, 99, 49) # numeric vector
-passed <- c(TRUE, TRUE, TRUE, FALSE) # logical vector
+student_name <- c("Larry", "Velma", "Cher", "Stew") # character vector type
+test_score <- c(70, 80, 99, 49) # numeric vector type
+passed <- c(TRUE, TRUE, TRUE, FALSE) # logical vector type
 
 #7. & 8.
 df_test_results <- data.frame("student_name"=student_name,"test_score"=test_score,"passed"=passed)
@@ -72,15 +73,17 @@ df_test_results
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 ```{r}
 score_above50 <- function(x){
-  ifelse(x>50, TRUE, FALSE)
+  ifelse(x>50, TRUE, FALSE) # if test score x is > 50, TRUE, else FALSE
 }
 
 ```
 11. Apply your function to the vector with test scores that you created in number 5. 
 
-```{r}
-passing_score <- score_above50(x = test_score)
+```{r} 
+# Determines whether each score in the test_score vector is a passing score
+passing_score <- score_above50(x = test_score) 
 passing_score
+
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
