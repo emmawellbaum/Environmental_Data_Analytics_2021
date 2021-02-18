@@ -16,7 +16,7 @@ editor_options:
 
 ## Expression function and Saving plots
 
-The expression function can be used when you want to add mathematical symbols and subscripts mixed with regular letter to labels. 
+The expression function can be used when you want to add mathematical symbols and subscripts mixed with regular letter to labels. Subscript is represented using [x]. 
 
 ```{r}
 Plot_text <-
@@ -59,16 +59,26 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Plot surface temperatures by day of  year. 
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
-
+ex.1 <- 
+  ggplot(filter(PeterPaul.chem.nutrients, depth == 0),
+         aes(x=daynum, y=temperature_C, color=year4)) +
+  geom_point(size=0.5, shape=17, alpha=0.5) +
+  facet_wrap(vars(lakename), nrow=2) +
+  labs(title="Plot 1", x = "Day of the Year", y = "Temperature (C)", color = "Year") +
+  scale_x_continuous(limits = c(120,320))
+print(ex.1)
 
 #2. 
 # Plot temperature by date. Color your points by depth.
 # Change the size of your point to 0.5
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
-
-
-
+ex.2 <- 
+  ggplot(PeterPaul.chem.nutrients, aes(x=sampledate, y=temperature_C, color=depth)) +
+  geom_point(size=0.5, alpha = 0.5) +
+  scale_color_viridis(option = "magma", direction = -1) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y")
+print(ex.2)
 
 ```
 ## Plotting the relationship between two continuous variables: Scatterplot
@@ -81,8 +91,11 @@ Exercise: Plot relationships between air quality measurements
 # Plot AQI values for ozone by PM2.5, colored by latitude 
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
-
-
+ex.3 <-
+  ggplot(EPAair, aes(x=Ozone, y=PM2.5, color=Mean.Latitude)) +
+  geom_point(size=0.5, alpha=0.5)+
+  geom_smooth(method = lm, se = FALSE, color = "red")
+print(ex.3)
 
 
 ```
@@ -97,6 +110,25 @@ Exercise: Plot distributions of AQI values for EPAair.
 # Create several types of plots depicting PM2.5, divided by year. 
 # Choose which plot displays the data best and justify your choice. 
 
+# Column plot
+ggplot(EPAair, aes(y=PM2.5, x=as.factor(Year))) +
+  geom_col()
+
+#Box plot
+ggplot(EPAair, aes(y=PM2.5, x=as.factor(Year))) +
+  geom_boxplot()
+
+#Dot plot
+ggplot(EPAair, aes(x=as.factor(Year), y=PM2.5)) +
+  geom_dotxplot(aes(color=as.factor(Year),fill=as.factor(Year)),
+                binaxis = 'y',
+                binwidth = 1,
+                stackdir = 'center',
+                dotsize = 0.2)
+
+#Violin plot
+ggplot(EPAair, aes(x=as.factor(Year), y= PM2.5)) +
+  geom_violin()
 
 
 ```
@@ -113,9 +145,19 @@ The following graph displays the counts of specific endpoints measured in neonic
 ```{r}
 
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
-ggplot(Neonics) +
-  geom_bar(aes(x = Endpoint))
 
+#Add a new attribute of sorted Endpoint levels
+Neonics <- Neonics %>% 
+  mutate(Endpoint_1 = reorder(Neonics$Endpoint,Neonics$Endpoint,FUN='length'))
+
+# Change the factor order
+
+ggplot(Neonics) +
+  geom_bar(aes(x = Endpoint_1), fill="orange", color="dark orange") +
+  theme_minimal() +
+  labs(x='Endpoint') +
+  theme(axis.text.x = element_text(angle=45))+
+  scale_x_discrete(limits = rev(levels(Neonics$Endpoint_1)))
 
 
 ```
