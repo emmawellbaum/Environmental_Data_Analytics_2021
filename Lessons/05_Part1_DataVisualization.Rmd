@@ -78,21 +78,24 @@ Here are some commonly used aesthetic types that can be manipulated in ggplot:
 
 ```{r, fig.height = 3, fig.width = 4, warning = FALSE}
 # Scatterplot
+
+# Example with aesthetics in ggplot line (applied to all plots in ggplot)
 ggplot(EPAair, aes(x = Date, y = Ozone)) + 
   geom_point()
 
+# Example with aesthetics in geom line (useful when adding 2+ plots)
 O3plot <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone))
 print(O3plot)
 
 # Fix this code
 O3plot2 <- ggplot(EPAair) +
-  #geom_point(aes(x = Date, y = Ozone, color = "blue"))
-  geom_point(aes(x = Date, y = Ozone), color = "blue")
+  #geom_point(aes(x = Date, y = Ozone, color = "blue")) -- color inside aes adds a plot layer
+  geom_point(aes(x = Date, y = Ozone), color = "blue") # color outside aes changes plot color
 print(O3plot2)
 
 # Add additional variables
-# How could you automatically assign a marker color to a variable? 
+# How could you automatically assign a marker color to a variable?
 PMplot <- 
   ggplot(EPAair, aes(x = Month, y = PM2.5, shape = as.factor(Year), color = Site.Name)) +
   geom_point()
@@ -102,7 +105,7 @@ print(PMplot)
 PMplot.faceted <-
   ggplot(EPAair, aes(x = Month, y = PM2.5, shape = as.factor(Year))) +
   geom_point() +
-  facet_wrap(vars(Site.Name), nrow = 3)
+  facet_wrap(vars(Site.Name), nrow = 3) #separate plots for each site, organized into 3 rows
 print(PMplot.faceted)
 
 # Filter dataset within plot building and facet by multiple variables
@@ -111,7 +114,7 @@ PMplot.faceted2 <-
                   Site.Name == "Bryson City"), 
          aes(x = Month, y = PM2.5)) + 
   geom_point() +
-  facet_grid(Site.Name ~ Year) 
+  facet_grid(Site.Name ~ Year) # site name by year (column representing each year and rows representing the three sites)
 print(PMplot.faceted2)
 
 # Plot true time series with geom_line
@@ -147,14 +150,14 @@ tempvsdepth <-
   ggplot(PeterPaul.chem.nutrients, aes(x = temperature_C, y = depth)) +
   #ggplot(PeterPaul.chem.nutrients, aes(x = temperature_C, y = depth, color = daynum)) +
   geom_point() +
-  scale_y_reverse()
+  scale_y_reverse() # because temperature decreases with depth
 print(tempvsdepth)
 
 NvsP <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth)) +
   geom_point() +
-  geom_smooth(method = lm) +
-  geom_abline(aes(slope = 16, intercept = 0))
+  geom_smooth(method = lm) + #linear trend line
+  geom_abline(aes(slope = 16, intercept = 0)) # line when slope and intercept are known
 print(NvsP)
 
 ```
@@ -168,7 +171,7 @@ What might be more effective ways to display the information? Navigate to the bo
 # Box and whiskers plot
 Nutrientplot3 <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(x = lakename, y = concentration)) +
-  geom_boxplot(aes(color = nutrient)) # Why didn't we use "fill"?
+  geom_boxplot(aes(color = nutrient)) # Why didn't we use "fill"? Becuase it would have left the outline of each boxplot black and changed the fill color of based on nutrient type. This would have been difficult to see.
 print(Nutrientplot3)
 
 # Dot plot
@@ -193,7 +196,7 @@ Nutrientplot6 <-
   geom_freqpoly(aes(x = nh34), color = "blue") +
   geom_freqpoly(aes(x = no23), color = "royalblue") +
   geom_freqpoly(aes(x = po4), color = "red") 
-print(Nutrientplot6)
+print(Nutrientplot6) #inefficient method; use gathered dataset
 
 # Using a gathered dataset
 Nutrientplot7 <-   
@@ -207,7 +210,7 @@ print(Nutrientplot7)
 # Ridgeline plot
 Nutrientplot6 <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(y = nutrient, x = concentration)) +
-  geom_density_ridges(aes(fill = lakename), alpha = 0.5) #
+  geom_density_ridges(aes(fill = lakename), alpha = 0.5) # alternative to frequency plots
 print(Nutrientplot6)
 
 
