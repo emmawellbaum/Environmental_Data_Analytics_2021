@@ -255,7 +255,7 @@ print(wind_data_plot)
 
 What would we conclude based on these findings? 
 
-> Answer:
+> Answer: There is a decreased trend in windspeed over time.
 
 
 ## Forecasting with Autoregressive and Moving Average Models (ARMA)
