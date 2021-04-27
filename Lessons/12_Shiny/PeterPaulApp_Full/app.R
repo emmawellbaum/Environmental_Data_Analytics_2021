@@ -53,7 +53,7 @@ server <- function(input, output) {
     # Define reactive formatting for filtering within columns
      filtered_nutrient_data <- reactive({
        nutrient_data %>%
-         filter(sampledate >= input$x[1] & sampledate <= input$x[2]) %>%
+         filter(sampledate >= as.Date(input$x[1]) & sampledate <= as.Date(input$x[2])) %>%
          filter(depth_id %in% input$fill) %>%
          filter(lakename %in% input$shape) 
      })
