@@ -63,19 +63,41 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 
 ## WHY R MARKDOWN?
 
-<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).> 
+<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).>
+
+R Markdown is useful because it allows users to:
+
+-   Create an *easy to read* document directly from the markdown file
+-   Create files in *various formats* for easy sharing
+-   Utilize **version control**
+-   Easily combine text/code/plots in one document
 
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
 
+Dataset                       | Description
+----------------------------- | ------------------------------------------------
+ECOTOX Neonicotinoids Insects | Neonicotinoid effects on insects
+EPA Air O~3~ NC2018 & NC2019  | Daily ozone levels at all NC sites (2018-19)
+EPA Air PM25                  | Daily PM2.5 levels at all NC sites (2018-19)
+EPA Air 0~3~ Garinger NC      | Daily O~3~ levels at Garinger, NC site (2010-19)
+NEON NIWO Litter              | Mass & trap sampling datasets
+NTL-LTER chemical & physical  | lake depth, temperature, oxygen, and light data
+NTL-LTER nutrient             | lake nutrient data (phosphorous, nitrogen, etc.)
+NWIS Site Info NE             | USGS gage site locations in NE
+NWIS Site FLow Data NE        | USGS gage site flow data for NE
 
 ## R CHUNK EDITING CHALLENGE
 
 ### Installing packages
 
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run).
+
+```{r eval = FALSE}
+install.packages(knitr)
+```
 
 
 ### Setup
@@ -86,6 +108,35 @@ Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, a
 
 Customize the chunk options such that the code is run but is not displayed in the final document.
 
+```{r setup, message = FALSE, echo = FALSE}
+# Check the working directory
+getwd()
+
+# Load necessary packages
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+# Set theme
+mytheme <- theme_classic() +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
+
+
+# Load the NTL-LTER_Lake_Nutrients_Raw dataset
+NTL.nutrient.data <- read.csv("./Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv")
+
+# Display the head of the dataset
+head(NTL.nutrient.data)
+
+# Set the date column to a date format
+NTL.nutrient.data$sampledate <- as.Date(NTL.nutrient.data$sampledate, format = "%m/%d/%y")
+
+# Customize the chunk options so that the code is run, but not displayed
+#knitr::opts_chunk$set(echo = FALSE)
+```
+
 
 ### Data Exploration, Wrangling, and Visualization
 
@@ -95,17 +146,63 @@ Create an R chunk below to create a processed dataset do the following operation
 -   Include only surface samples (depth = 0 m)
 -   Drop rows with missing data
 
+```{r process.data}
+NTL.nutrient.processed <- NTL.nutrient.data %>% 
+    select(lakename:sampledate,depth:po4) %>% 
+    filter(depth == 0) %>% 
+    drop_na()
+```
+
 Create a second R chunk to create a summary dataset with the mean, minimum, maximum, and standard deviation of total nitrogen concentrations for each lake. Create a second summary dataset that is identical except that it evaluates total phosphorus. Customize the chunk options such that the code is run but not displayed in the final document.
+
+```{r summarize.data, echo=FALSE}
+NTL.Nitrogen <- NTL.nutrient.processed %>%
+  group_by(lakename) %>%
+  summarize(meanTN = mean(tn_ug),
+            minTN = min(tn_ug),
+            maxTN = max(tn_ug),
+            sdTN = sd(tn_ug))
+
+NTL.Phosphorous <- NTL.nutrient.processed %>%
+  group_by(lakename) %>%
+  summarize(meanTP = mean(tp_ug),
+            minTP = min(tp_ug),
+            maxTP = max(tp_ug),
+            sdTP = sd(tp_ug))
+```
 
 Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk options such that the final table is displayed but not the code used to generate the table.
 
+```{r create.tables, echo=FALSE}
+knitr::kable(NTL.Nitrogen, col.names = c('Lake Name', 'Mean TN', 'Min. TN', 'Max. TN', 'SD'), caption="Summary of Total Nitrogen (TN) by Lake (in ug)")
+
+knitr::kable(NTL.Phosphorous, col.names = c('Lake Name', 'Mean TP', 'Min. TP', 'Max. TP', 'SD'), caption="Summary of Total Phosphorous (TP) by Lake (in ug)")
+```
+
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
 
+```{r plot.TN, echo=FALSE, fig.align='left', fig.cap="Total Nitrogen Over Time"}
+ggplot(NTL.nutrient.processed, aes(x=sampledate, y=tn_ug, color=lakename)) +
+  geom_line() +
+  scale_color_manual(values = c('#332288','#117733', '#44AA99', '#88CCEE', '#DDCC77', '#CC6677', '#AA4499', '#882255')) +
+  labs(x='Date', y ='Total Nitrogen (ug)', color='Lake Name')
+  
+```
+
+```{r plot.TP, echo=FALSE, fig.align='left', fig.cap="Total Phosphorous Over Time"}
+ggplot(NTL.nutrient.processed, aes(x=sampledate, y=tp_ug, color=lakename)) +
+  geom_line() +
+  scale_color_manual(values = c('#332288','#117733', '#44AA99', '#88CCEE', '#DDCC77', '#CC6677', '#AA4499', '#882255')) +
+  labs(x='Date', y ='Total Phosphorous (ug)', color='Lake Name')
+```
 
 ### Communicating results
 
-Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions?
+Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions
 
+Total Nitrogen and phosphorous levels vary across the eight lakes included in the North Temperate Lakes Long Term Ecological Research studies. While the overall trend for some lakes, such as West Long Lake, appears to be fairly horizontal for both nutrients over time, other lakes, such as East Long Lake, have experienced noticeable increases in nutrient levels over time. When looking at the eight lakes together, there are also apparent spikes in nutrient levels during certain years. For example, there was a spike in both total nitrogen and phosphorous levels affecting several lakes during the summer of 1996.
+***
+To analyze this dataset further, we could perform trend analyses for each of the NTL-LTER lakes to determine whether there have been any significant changes in lake nutrient levels over time. In doing so, it will be necessary to evaluate whether lake nutrient levels are seasonal. This trend analysis would also allow us to compare the lakes to each other and ultimately evaluate the lake health throughout the NTL-LTER.
 
 ## KNIT YOUR PDF
 When you have completed the above steps, try knitting your PDF to see if all of the formatting options you specified turned out as planned. This may take some troubleshooting.
